@@ -1,0 +1,1 @@
+# fastapi sqlalchemy pydantic pydantic-settings asyncpg uvicorn bcrypt alembic jinja2 aiohttp
