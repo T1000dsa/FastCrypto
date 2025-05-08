@@ -10,10 +10,10 @@ from src.core.config.logger import LOG_CONFIG
 
 from src.api.v1.endpoints.healthcheck import router as health_router
 from src.api.v1.endpoints.index import router as index_router
+from src.api.v1.auth.authentication import router as auth_router
 
 
 app = FastAPI()
-print(settings)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -33,6 +33,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(health_router)
 app.include_router(index_router)
+app.include_router(auth_router)
 
 if __name__ == '__main__':
     uvicorn.run(
