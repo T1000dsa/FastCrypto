@@ -1,16 +1,15 @@
-from fastapi import Response, HTTPException, status
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
-from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 import logging
 
 from src.core.config.settings import settings
 from src.core.services.auth.token_service import TokenService
 from src.core.pydantic_schemas.auth_schema import RefreshToken
-from src.core.services.database.postgres.models.user import UserModel
+from src.core.services.database.models.user import UserModel
 from src.core.pydantic_schemas.user import UserSchema
-from src.core.services.database.postgres.orm.user_orm import (
+from src.core.services.database.orm.user_orm import (
     select_data_user, 
     insert_data, 
     get_all_users, 
@@ -51,6 +50,7 @@ class UserService:
             # Create tokens
             tokens = await self.token_service.create_both_tokens({"sub": str(user.id)})
             
+
             # Store refresh token
             await self.token_service.store_refresh_token(
                 session=self.session,
@@ -71,11 +71,14 @@ class UserService:
     async def create_user(self, data: UserSchema) -> None:
         await insert_data(self.session, data)
 
-    async def logout_user(self, user_id: int) -> None:
-        try:
-            user = await self.get_user_by_id(user_id)
-            if user:
-                await user.revoke_all_tokens(self.session)
-        except Exception as e:
-            logger.error(f"Error during token revocation: {e}")
-            raise
+    async def logout_user(self, token: str, token_type:str) -> None:
+        data_user = self.token_service.verify_token(token, token_type)
+        user_id = int(data_user['sub'])
+        if user_id:
+            try:
+                user = await self.get_user_by_id(user_id)
+                if user:
+                    await user.revoke_all_tokens(self.session)
+            except Exception as e:
+                logger.error(f"Error during token revocation: {e}")
+                raise

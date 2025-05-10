@@ -4,7 +4,7 @@ from sqlalchemy import select, update, delete, join
 from typing import Union, Optional
 import logging
 
-from src.core.services.database.postgres.models.user import UserModel
+from src.core.services.database.models.user import UserModel
 from src.core.pydantic_schemas.user import UserSchema as User_pydantic
 
 

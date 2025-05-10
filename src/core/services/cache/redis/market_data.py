@@ -1,0 +1,2 @@
+
+class RedisMarketData():pass

@@ -5,7 +5,7 @@ from typing import Annotated
 from src.core.services.auth.token_service import TokenService
 from src.core.services.auth.user_service import UserService
 from src.core.dependencies.db_helper import DBDI
-from src.core.services.database.postgres.models.user import UserModel
+from src.core.services.database.models.user import UserModel
 from src.core.config.settings import settings
 from src.core.config.auth_config import (
     oauth2_scheme, 
@@ -16,7 +16,7 @@ from src.core.config.auth_config import (
 
 async def get_token_service() -> TokenService:
     return TokenService(
-        secret_key=settings.jwt.key,
+        secret_key=settings.jwt.key.get_secret_value(),
         algorithm=settings.jwt.algorithm
     )
 
@@ -37,7 +37,7 @@ async def get_current_user(
         raise credentials_exception
     
     try:
-        payload = jwt.decode(token, settings.jwt.key, algorithms=[settings.jwt.algorithm])
+        payload = jwt.decode(token, settings.jwt.key.get_secret_value(), algorithms=[settings.jwt.algorithm])
         user_id: int = payload.get("sub")  # Changed from "use" to standard "sub"
         if user_id is None:
             raise credentials_exception

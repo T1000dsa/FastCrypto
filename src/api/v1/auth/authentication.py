@@ -11,7 +11,7 @@ from src.core.pydantic_schemas.user import UserSchema
 from src.core.config.settings import templates, settings
 from src.core.utils.prepared_templates import prepare_template
 from src.core.dependencies.db_helper import DBDI
-from src.core.menu.urls import choice_from_menu, menu_items
+from src.frontend.menu.urls import choice_from_menu, menu_items
 from src.core.dependencies.auth_deps import get_token_service, get_auth_service, GET_CURRENT_ACTIVE_USER
 from src.core.config.auth_config import (
     ACCESS_TYPE, 
@@ -55,6 +55,7 @@ async def login(
     form_data: form_scheme,
     auth_service: UserService = Depends(get_auth_service)
 ):
+
     try:
         tokens = await auth_service.authenticate_user(
             username=form_data.username,
@@ -162,10 +163,7 @@ async def logout(
     
     if token:
         try:
-            payload = jwt.decode(token, settings.jwt.key, algorithms=[settings.jwt.algorithm])
-            user_id = payload.get("sub")
-            if user_id:
-                await auth_service.logout_user(int(user_id))
+            await auth_service.logout_user(token, ACCESS_TYPE)
         except (JWTError, ValueError) as e:
             logger.debug(f"Token error during logout: {e}")
     

@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import SecretStr
 import logging
 
 from src.core.config.settings import settings
@@ -16,9 +17,9 @@ from src.core.config.auth_config import (
     pwd_context
 )
 from src.core.pydantic_schemas.auth_schema import RefreshToken
-from src.core.services.database.postgres.models.refresh_token import RefreshTokenModel
-from src.core.services.database.postgres.models.user import UserModel
-from src.core.services.database.postgres.orm.token_crud import (
+from src.core.services.database.models.refresh_token import RefreshTokenModel
+from src.core.services.database.models.user import UserModel
+from src.core.services.database.orm.token_crud import (
     insert_data, 
     delete_data, 
     delete_all_user_tokens, 
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 class TokenService:
     def __init__(
         self, 
-        secret_key: str = settings.jwt.key,
+        secret_key: str = settings.jwt.key.get_secret_value(),
         algorithm: str = settings.jwt.algorithm,
         pwd: CryptContext = pwd_context
     ):
@@ -43,6 +44,7 @@ class TokenService:
         return token_urlsafe(32)
         
     async def create_token(self, data: dict, expires_delta: timedelta, token_type: str) -> str:
+        logger.debug("in create_token 1")
         """Base function for all tokens"""
         to_encode = data.copy()
         date_now = datetime.now(timezone.utc)
@@ -53,6 +55,7 @@ class TokenService:
             "type": token_type,
             "iat": date_now
         })
+        logger.debug("in create_token 4")
         return jwt.encode(to_encode, self.secret, algorithm=self.algorithm)
     
     async def create_access_token(self, data: dict) -> str:

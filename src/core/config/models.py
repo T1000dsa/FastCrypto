@@ -1,4 +1,5 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, SecretStr
+from datetime import timedelta
 
 
 class RunConfig(BaseModel):
@@ -34,6 +35,8 @@ class RedisSettings(BaseModel):
     host:str = 'localhost'
     port:int = 6379
     db:int = 0
+    REDIS_CACHE_TTL: int = 1
+    REDIS_CACHE_TTL_SESSIONS: int = 1
 
 class CurrentDB(BaseModel):
     database:str = 'postgres'
@@ -46,7 +49,7 @@ class DatabaseConfig(BaseModel):
 
     name: str
     user: str
-    password: str
+    password: SecretStr
     host: str = 'localhost'
     port: int = 5432
 
@@ -55,24 +58,33 @@ class DatabaseConfig(BaseModel):
     @property
     def give_url(self):
         current_db = self.database.database.lower() 
+        undecoded_pass = self.password.get_secret_value()
 
         if current_db == 'postgres':
-            return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
+            return f"postgresql+asyncpg://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
     
         if current_db == 'mysql':
-            return f"mysql+asyncmy://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
+            return f"mysql+asyncmy://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
         
         if current_db == 'mongodb':
-            return f"mongodb://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
+            return f"mongodb://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
         
         if current_db == 'mariadb':
-            return f"mariadb+asyncmy://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
+            return f"mariadb+asyncmy://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
         
         # Default case if database type is not recognized
         raise ValueError(f"Unsupported database type: {current_db}")
 
 class JwtConfig(BaseModel):
-    key:str = 'base_key'
+    key:SecretStr = 'base_key'
     algorithm:str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES:int = 30
     REFRESH_TOKEN_EXPIRE_DAYS:int = 7
+
+class BinanceService(BaseModel):
+    BINANCE_API_KEY:str
+    BINANCE_API_SECRET:SecretStr
+
+
+class CorsSettings(BaseModel):
+    CORS_ORIGINS:SecretStr

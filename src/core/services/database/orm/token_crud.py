@@ -6,8 +6,8 @@ from typing import Union, Optional
 from datetime import datetime, timezone
 import logging
 
-from src.core.services.database.postgres.models.refresh_token import RefreshTokenModel
-from src.core.services.database.postgres.models.user import UserModel
+from src.core.services.database.models.refresh_token import RefreshTokenModel
+from src.core.services.database.models.user import UserModel
 from src.core.pydantic_schemas.auth_schema import RefreshToken
 from src.core.pydantic_schemas.user import UserSchema
 from src.core.config.auth_config import (

@@ -6,11 +6,11 @@ from sqlalchemy import String
 import bcrypt
 import logging
 
-from src.core.services.database.postgres.models.base import Base, int_pk, created_at, updated_at
+from src.core.services.database.models.base import Base, int_pk, created_at, updated_at
 
 
 if TYPE_CHECKING:
-    from src.core.services.database.postgres.models.refresh_token import RefreshTokenModel
+    from src.core.services.database.models.refresh_token import RefreshTokenModel
 
 logger = logging.getLogger(__name__)
 

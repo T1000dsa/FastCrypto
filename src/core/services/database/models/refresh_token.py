@@ -8,10 +8,10 @@ from sqlalchemy import String, ForeignKey, TypeDecorator, DateTime, Boolean
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Optional
 
-from src.core.services.database.postgres.models.base import Base, int_pk, created_at
+from src.core.services.database.models.base import Base, int_pk, created_at
 
 if TYPE_CHECKING:
-    from src.core.services.database.postgres.models.user import UserModel  # Path to your UserModel
+    from src.core.services.database.models.user import UserModel  # Path to your UserModel
 
 
 class NaiveDateTime(TypeDecorator):

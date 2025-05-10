@@ -4,7 +4,7 @@ import logging
 
 from src.core.config.settings import templates
 from src.core.utils.prepared_templates import prepare_template
-from src.core.menu.urls import choice_from_menu, get_menu
+from src.frontend.menu.urls import choice_from_menu, get_menu
 
 
 logger = logging.getLogger(__name__)
