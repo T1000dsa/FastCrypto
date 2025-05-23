@@ -3,7 +3,7 @@ from fastapi.requests import Request
 import logging
 
 from src.core.config.settings import templates
-from src.core.utils.prepared_templates import prepare_template
+from src.utils.prepared_templates import prepare_template
 from src.frontend.menu.urls import choice_from_menu, get_menu
 
 

@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     AsyncSession,
     )
+from contextlib import asynccontextmanager
+from sqlalchemy.exc import SQLAlchemyError
 import logging
 
 from src.core.config.settings import settings
@@ -46,17 +48,23 @@ class DbHelper:
     async def health_check(self) -> bool:
         """Check database connectivity"""
         try:
-            async for session in self.session_getter():  # Properly consume the async generator
-                try:
-                    await session.execute(text("SELECT 1"))  # Simple test query
-                    return True
-                finally:
-                    await session.close()  # Ensure session is closed
-            return False  # This line is theoretically unreachable
-        
+            async with self.session_factory() as session:
+                await session.execute(text("SELECT 1"))
+                return True
         except Exception as e:
             logger.error(f"Database health check failed: {e}")
             return False
+        
+    @asynccontextmanager
+    async def async_celery_session(self):
+        """Async session context manager for Celery tasks."""
+        async with self.session_factory() as session:
+            try:
+                yield session
+                await session.commit()
+            except SQLAlchemyError:
+                await session.rollback()
+                raise
 
 
 db_helper = DbHelper(
@@ -67,4 +75,3 @@ db_helper = DbHelper(
     max_overflow=settings.db.max_overflow
 )
 DBDI = Annotated[AsyncSession, Depends(db_helper.session_getter)]
-DBDI_WIPING = Annotated[AsyncSession, Depends(db_helper.dispose)]

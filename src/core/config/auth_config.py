@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status, Depends
 from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from authlib.integrations.starlette_client import OAuth
 from typing import Any, Dict, Annotated
 
@@ -10,7 +10,6 @@ from src.core.config.settings import settings
 oauth = OAuth()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 form_scheme = Annotated[OAuth2PasswordRequestForm, Depends(OAuth2PasswordRequestForm)]
 
 SECRET_KEY = settings.jwt.key
@@ -42,7 +41,7 @@ class AuthException(HTTPException):
 
 credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
+            detail="Not authorized",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

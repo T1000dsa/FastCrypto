@@ -11,6 +11,7 @@ from src.core.config.models import (
     JwtConfig, 
     BinanceService,
     CorsSettings,
+    Coinmarketcap,
     field_validator
     )
 
@@ -18,6 +19,8 @@ from src.core.config.models import (
 base_dir = Path(__file__).parent.parent.parent
 frontend_root = base_dir / 'frontend' / 'templates'
 templates = Jinja2Templates(directory=frontend_root)
+BLOCKCHAIN_API_URL = "https://blockchain.info"
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -41,6 +44,7 @@ class Settings(BaseSettings):
 
     # Api Clients
     Bin:BinanceService
+    Con:Coinmarketcap
 
     #elastic:ElasticSearch = ElasticSearch()
     #email:Email_Settings = Email_Settings()

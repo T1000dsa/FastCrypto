@@ -58,19 +58,19 @@ class DatabaseConfig(BaseModel):
     @property
     def give_url(self):
         current_db = self.database.database.lower() 
-        undecoded_pass = self.password.get_secret_value()
+        decoded_pass = self.password.get_secret_value()
 
         if current_db == 'postgres':
-            return f"postgresql+asyncpg://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
+            return f"postgresql+asyncpg://{self.user}:{decoded_pass}@{self.host}:{self.port}/{self.name}"
     
         if current_db == 'mysql':
-            return f"mysql+asyncmy://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
+            return f"mysql+asyncmy://{self.user}:{decoded_pass}@{self.host}:{self.port}/{self.name}"
         
         if current_db == 'mongodb':
-            return f"mongodb://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
+            return f"mongodb://{self.user}:{decoded_pass}@{self.host}:{self.port}/{self.name}"
         
         if current_db == 'mariadb':
-            return f"mariadb+asyncmy://{self.user}:{undecoded_pass}@{self.host}:{self.port}/{self.name}"
+            return f"mariadb+asyncmy://{self.user}:{decoded_pass}@{self.host}:{self.port}/{self.name}"
         
         # Default case if database type is not recognized
         raise ValueError(f"Unsupported database type: {current_db}")
@@ -88,3 +88,6 @@ class BinanceService(BaseModel):
 
 class CorsSettings(BaseModel):
     CORS_ORIGINS:SecretStr
+
+class Coinmarketcap(BaseModel):
+    api:SecretStr

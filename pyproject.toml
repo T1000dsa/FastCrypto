@@ -26,7 +26,10 @@ dependencies = [
     "python-jose[cryptography] (>=3.4.0,<4.0.0)",
     "python-multipart (>=0.0.20,<0.0.21)",
     "requests (>=2.32.3,<3.0.0)",
-    "pybit (>=5.10.1,<6.0.0)"
+    "pybit (>=5.10.1,<6.0.0)",
+    "redis (>=6.1.0,<7.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "celery (>=5.5.2,<6.0.0)"
 ]
 
 

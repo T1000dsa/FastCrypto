@@ -15,10 +15,8 @@ from src.api.v1.endpoints.orders import router as orders_router
 from src.api.v1.endpoints.users import router as users_router
 from src.api.v1.endpoints.wallets import router as wallets_router
 from src.api.v1.auth.authentication import router as auth_router
-
 from src.api.v1.endpoints.index import router as index_router
-
-from src.core.dependencies.db_helper import db_helper
+from src.api.v1.endpoints.general_work import router as general_router
 
 
 app = FastAPI()
@@ -56,6 +54,7 @@ app.include_router(orders_router)
 app.include_router(users_router)
 app.include_router(wallets_router)
 app.include_router(index_router)
+app.include_router(general_router)
 
 
 if __name__ == '__main__':
@@ -63,5 +62,6 @@ if __name__ == '__main__':
         'main:app',
         host=settings.run.host,
         port=settings.run.port,
-        reload=True
+        reload=True,
+        log_config=LOG_CONFIG
         )

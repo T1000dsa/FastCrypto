@@ -6,9 +6,10 @@ from sqlalchemy import pool
 from alembic import context
 
 from src.core.config.settings import settings
-from src.core.services.database.postgres.models.base import Base
-from src.core.services.database.postgres.models.user import UserModel
-from src.core.services.database.postgres.models.refresh_token import RefreshTokenModel 
+from src.core.services.database.models.base import Base
+from src.core.services.database.models.user import UserModel
+from src.core.services.database.models.refresh_token import RefreshTokenModel 
+from src.core.services.database.models.token import TokenModel 
 # alembic revision --autogenerate -m "init"
 
 # this is the Alembic Config object, which provides

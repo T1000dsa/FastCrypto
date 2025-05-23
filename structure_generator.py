@@ -1,9 +1,15 @@
 import os
 from pathlib import Path
 
-def print_structure(startpath, max_level=10, ignore_dirs=None, full=False):
+def print_structure(startpath, max_level=10, ignore_dirs=None, full=True):
     if ignore_dirs is None:
-        ignore_dirs = {"__pycache__", "venv", ".git", ".idea", "versions", "migrations", "frontend", "poetry.lock", "pyproject.toml"}
+        ignore_dirs = {
+            "__pycache__", "venv", ".git", 
+            ".idea", "versions", "migrations", 
+            "frontend", "poetry.lock", "pyproject.toml", 
+            '.env', '.gitignore', 'env.py',
+            'alembic.ini','Dockerfile','.dockerignore',
+            'docker-compose.yml'}
 
     if full:
         with open('structure_generator_result.txt', 'w') as file_x:
